@@ -23,12 +23,17 @@ struct MenuBarLabel: View {
     }
 
     var body: some View {
-        Image(nsImage: MenuBarIconRenderer.makeLabel(
+        let image = MenuBarIconRenderer.makeLabel(
             percent: snapshot.batteryPercent,
             batteryColor: NSColor(batteryColor),
             charging: snapshot.isCharging,
             wattageText: snapshot.externalConnected ? String(format: "%.0fW", snapshot.livePower ?? 0) : nil,
             wattageColor: NSColor(speed.color)
-        ))
+        )
+        // Re-identify the view whenever the rendered width changes so
+        // MenuBarExtra performs a fresh layout pass and the status item
+        // shrinks/grows with the content instead of keeping its first width.
+        Image(nsImage: image)
+            .id(image.size.width)
     }
 }
